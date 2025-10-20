@@ -15,7 +15,7 @@ header {
     margin: auto;
 }
 
-/**** Menu Style *****************************************/
+
 nav {
     border-bottom: 1px solid black;
 }
@@ -45,7 +45,7 @@ ul.navlist li a:hover {
     background-color: #111;
 }
 
-/**** Styling for main part */
+
 main {
     display: flex;
     flex-wrap: wrap;
@@ -75,7 +75,7 @@ section {
     flex: 3;
 }
 
-/* Styling for search in aside */
+
 .search {
     display: block;
     width: auto;
@@ -89,14 +89,14 @@ section {
     padding: 10px;
 }
 
-/* Styling for text inputs in the form */
+
 .textInput {
     display: block;
     width: auto;
     text-align: left;
 }
 
-/* Styling with a media query */
+
 @media screen and (max-width: 700px) {
     aside {
         width: 100%;
