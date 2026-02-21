@@ -6,23 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
-public class Order {
+@Table(name = "produce")
+public class Produce {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
-    @JoinColumn(name = "buyer_id", nullable = false)
-    private User buyer;
+    @Column(nullable = false, unique = true)
+    private String name;
     
-    @Column(name = "order_date", nullable = false)
-    private LocalDateTime orderDate;
-    
-    // One order can have many order items
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    // One produce can be sold by many sellers through SellerProduce
+    @OneToMany(mappedBy = "produce", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SellerProduce> sellerProduces = new ArrayList<>();
     
     // Auditing fields
     @Column(name = "created_date")
@@ -32,11 +28,10 @@ public class Order {
     private LocalDateTime lastModifiedDate;
     
     // Constructors
-    public Order() {}
+    public Produce() {}
     
-    public Order(User buyer) {
-        this.buyer = buyer;
-        this.orderDate = LocalDateTime.now();
+    public Produce(String name) {
+        this.name = name;
     }
     
     // Getters and Setters
@@ -48,28 +43,20 @@ public class Order {
         this.id = id;
     }
     
-    public User getBuyer() {
-        return buyer;
+    public String getName() {
+        return name;
     }
     
-    public void setBuyer(User buyer) {
-        this.buyer = buyer;
+    public void setName(String name) {
+        this.name = name;
     }
     
-    public LocalDateTime getOrderDate() {
-        return orderDate;
+    public List<SellerProduce> getSellerProduces() {
+        return sellerProduces;
     }
     
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-    
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-    
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    public void setSellerProduces(List<SellerProduce> sellerProduces) {
+        this.sellerProduces = sellerProduces;
     }
     
     public LocalDateTime getCreatedDate() {
@@ -92,9 +79,6 @@ public class Order {
     protected void onCreate() {
         createdDate = LocalDateTime.now();
         lastModifiedDate = LocalDateTime.now();
-        if (orderDate == null) {
-            orderDate = LocalDateTime.now();
-        }
     }
     
     @PreUpdate

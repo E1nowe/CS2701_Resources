@@ -2,27 +2,30 @@ package com.example.demo.Models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "orders")
-public class Order {
+@Table(name = "order_items")
+public class OrderItem {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    // Many OrderItems belong to one Order
     @ManyToOne
-    @JoinColumn(name = "buyer_id", nullable = false)
-    private User buyer;
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
     
-    @Column(name = "order_date", nullable = false)
-    private LocalDateTime orderDate;
+    // Many OrderItems reference one SellerProduce
+    @ManyToOne
+    @JoinColumn(name = "seller_produce_id", nullable = false)
+    private SellerProduce sellerProduce;
     
-    // One order can have many order items
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @Column(nullable = false)
+    private Integer quantity;
+    
+    @Column(nullable = false)
+    private Double price; // Price at time of ordering
     
     // Auditing fields
     @Column(name = "created_date")
@@ -32,11 +35,13 @@ public class Order {
     private LocalDateTime lastModifiedDate;
     
     // Constructors
-    public Order() {}
+    public OrderItem() {}
     
-    public Order(User buyer) {
-        this.buyer = buyer;
-        this.orderDate = LocalDateTime.now();
+    public OrderItem(Order order, SellerProduce sellerProduce, Integer quantity, Double price) {
+        this.order = order;
+        this.sellerProduce = sellerProduce;
+        this.quantity = quantity;
+        this.price = price;
     }
     
     // Getters and Setters
@@ -48,28 +53,36 @@ public class Order {
         this.id = id;
     }
     
-    public User getBuyer() {
-        return buyer;
+    public Order getOrder() {
+        return order;
     }
     
-    public void setBuyer(User buyer) {
-        this.buyer = buyer;
+    public void setOrder(Order order) {
+        this.order = order;
     }
     
-    public LocalDateTime getOrderDate() {
-        return orderDate;
+    public SellerProduce getSellerProduce() {
+        return sellerProduce;
     }
     
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
+    public void setSellerProduce(SellerProduce sellerProduce) {
+        this.sellerProduce = sellerProduce;
     }
     
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
+    public Integer getQuantity() {
+        return quantity;
     }
     
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+    
+    public Double getPrice() {
+        return price;
+    }
+    
+    public void setPrice(Double price) {
+        this.price = price;
     }
     
     public LocalDateTime getCreatedDate() {
@@ -92,9 +105,6 @@ public class Order {
     protected void onCreate() {
         createdDate = LocalDateTime.now();
         lastModifiedDate = LocalDateTime.now();
-        if (orderDate == null) {
-            orderDate = LocalDateTime.now();
-        }
     }
     
     @PreUpdate
